@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const { exec } = require("child_process");
 const fs = require("fs");
 const path = require("path");
-const os = require("os"); // ★ Tempフォルダ用
+const os = require("os"); // Tempフォルダ用
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -72,7 +72,7 @@ ipcMain.handle("convert", async (event, { filePath, formats, bitrate }) => {
       ffBitrate = autoBitrate[format] || 192;
     }
 
-    // ★ 一時フォルダに変換結果を作る
+    // 一時フォルダに変換結果を作る
     const output = path.join(os.tmpdir(), `converted_${Date.now()}.${format}`);
 
     // 日本語パス対応
