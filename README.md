@@ -27,22 +27,36 @@ cd MooVoice
 npm install
 ```
 
-### 3. FFmpeg をインストール
+### 3. Electron をインストール
+```bash
+npm install electron
+```
+
+### 4. FFmpeg をインストール
 Windows: https://www.gyan.dev/ffmpeg/builds/
 
 ダウンロードした ffmpeg フォルダ内の `bin/ffmpeg.exe` を PATH に追加しておく
 
-### 4. アプリを起動
+### 5. アプリを起動
 ```bash
 npm start
 ```
 
 ## 🚀 使い方
 
+### 0. アプリを起動する
+```bash
+npm start
+
+
 1. 「動画ファイルを選択」ボタンから動画を選ぶ  
+
 2. 変換したい音声形式を選ぶ  
-3. ビットレートを選ぶ  
+
+3. ビットレートを選ぶ    
+
 4. 「変換する」を押す  
+
 5. 変換完了後、保存先フォルダを選ぶ  
 
 ## 📁 ディレクトリ構成
