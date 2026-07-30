@@ -1,0 +1,39 @@
+body {
+  font-family: sans-serif;
+  text-align: center;
+  padding-top: 40px;
+}
+
+button {
+  padding: 12px 20px;
+  font-size: 16px;
+  margin: 10px;
+  cursor: pointer;
+}
+
+#filePath {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #333;
+}
+
+.hidden {
+  display: none;
+}
+
+#progress {
+  margin-top: 30px;
+}
+
+.bar {
+  width: 200px;
+  height: 10px;
+  background: linear-gradient(90deg, #4caf50, #8bc34a);
+  animation: loading 1s infinite;
+}
+
+@keyframes loading {
+  0% { opacity: 0.2; }
+  50% { opacity: 1; }
+  100% { opacity: 0.2; }
+}

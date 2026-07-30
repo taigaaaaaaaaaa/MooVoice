@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h2>動画を音声ファイルにするやーつ</h2>
+
+  <button id="selectBtn">動画ファイルを選択</button>
+
+  <p id="filePath"></p>
+
+  <!-- 形式選択 -->
+  <select id="format">
+    <option value="" disabled selected>形式を選択</option>
+  </select>
+
+  <!-- ビットレート選択 -->
+  <select id="bitrate"></select>
+  <label for="bitrate">kbps</label>
+
+  <button id="convertBtn" disabled>変換する</button>
+
+  <div id="progress" class="hidden">
+    <p>変換中...</p>
+    <div class="bar"></div>
+  </div>
+
+<script>
+  const selectBtn = document.getElementById("selectBtn");
+  const convertBtn = document.getElementById("convertBtn");
+  const filePathText = document.getElementById("filePath");
+  const progress = document.getElementById("progress");
+  const formatSelect = document.getElementById("format");
+  const bitrateSelect = document.getElementById("bitrate");
+
+  let selectedFile = null;
+
+  // 形式一覧を最初から全部入れる
+  const formats = [
+    { value: "mp3", label: "MP3" },
+    { value: "aac", label: "AAC" },
+    { value: "ogg", label: "OGG (Vorbis)" },
+    { value: "opus", label: "OPUS" },
+    { value: "wav", label: "WAV" },
+    { value: "flac", label: "FLAC" },
+    { value: "alac", label: "ALAC" }
+  ];
+
+  formats.forEach(f => {
+    const opt = document.createElement("option");
+    opt.value = f.value;
+    opt.textContent = f.label;
+    formatSelect.appendChild(opt);
+  });
+
+  // 形式ごとのビットレート候補
+  const bitrateOptions = {
+    mp3: [64, 128, 256, 320],
+    aac: [96, 128, 192, 256],
+    ogg: [96, 160, 192],
+    opus: [64, 96, 128],
+    wav: "auto",
+    flac: "auto",
+    alac: "auto"
+  };
+
+  // 形式選択時にビットレート候補を更新
+  formatSelect.onchange = () => {
+    const format = formatSelect.value;
+    const options = bitrateOptions[format];
+    bitrateSelect.innerHTML = "";
+
+    if (options === "auto") {
+      const opt = document.createElement("option");
+      opt.value = "auto";
+      opt.textContent = "自動（固定）";
+      bitrateSelect.appendChild(opt);
+      bitrateSelect.disabled = true;
+      return;
+    }
+
+    bitrateSelect.disabled = false;
+
+    options.forEach(b => {
+      const opt = document.createElement("option");
+      opt.value = b;
+      opt.textContent = `${b} kbps`;
+      bitrateSelect.appendChild(opt);
+    });
+  };
+
+  // 動画ファイル選択
+  selectBtn.onclick = async () => {
+    selectedFile = await window.api.selectFile();
+    console.log("selectedFile:", selectedFile);
+
+    if (selectedFile) {
+      filePathText.textContent = selectedFile;
+      convertBtn.disabled = false;
+    }
+  };
+
+  // 変換処理
+  convertBtn.onclick = async () => {
+    progress.classList.remove("hidden");
+
+    const format = formatSelect.value;
+    const bitrate = bitrateSelect.value;
+
+    try {
+      const outputs = await window.api.convert({
+        filePath: selectedFile,
+        formats: [format],
+        bitrate
+      });
+
+      alert("変換完了！保存先フォルダを選択してねー");
+
+      const outputDir = await window.api.selectOutputDir();
+      if (!outputDir) {
+        alert("保存先が選択されませんでした");
+      } else {
+        const saved = await window.api.saveToFolder({
+          outputs,
+          outputDir
+        });
+
+        alert("保存完了！\n" + saved.join("\n"));
+      }
+
+    } catch (e) {
+      alert("変換中にエラーが発生しました\n" + e);
+      console.error("変換エラー:", e);
+    }
+
+    progress.classList.add("hidden");
+  };
+</script>
+</body>
+</html>
